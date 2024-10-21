@@ -13,7 +13,7 @@ export function isValidEmail(email: string) {
 const transporter = nodemailer.createTransport({
    service: 'gmail',
    port: 587, 
-   secure: true, 
+   secure: false, 
    auth: {
       user: process.env.EMAIL,
       pass: process.env.EMAIL_PASSWORD,

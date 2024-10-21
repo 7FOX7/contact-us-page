@@ -48,7 +48,11 @@ export async function handleSubmit(prevState: State, contactForm: FormData) {
       console.log(user)
    } 
    catch(err) {
-      throw new Error('oops, something went wrong! When writing a query: ' + err)
+      console.error('Error creating user:', err);
+      return {
+         errors: {}, 
+         message: 'Something went wrong when creating the user.'
+      };
    }
 
    await sendEmail(name.trim(), email.trim())
