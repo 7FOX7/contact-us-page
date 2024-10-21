@@ -2,7 +2,7 @@ import ContactForm from "./contact-form";
 
 export default function Home() {
   return (
-    <main className="w-full h-screen bg-blue-500 flex justify-center items-center">
+    <main className="w-full h-screen bg-black flex justify-center items-center">
       <ContactForm />      
     </main >
   );
