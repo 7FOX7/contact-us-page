@@ -1,5 +1,10 @@
+"use server"
+
 import { z } from "zod"
 import { isValidEmail } from "./utils"
+import { PrismaClient } from "@prisma/client"
+
+const prisma = new PrismaClient()
 
 export type State = {
    errors?: {
@@ -22,15 +27,23 @@ export async function handleSubmit(prevState: State, contactForm: FormData) {
       message: contactForm.get('message')
    })
 
-   console.log('here is the data: ' + contactForm.get('email'))
    if(!validatedEntries.success) {
-      console.log('you are about to mess up')
       return {
          errors: validatedEntries.error.flatten().fieldErrors
       }
    }
 
-   return {
-
-   } as any
+   const {name, email, message} = validatedEntries.data; 
+   try {
+      const user = await prisma.user.create({
+         data: {
+            name: name.trim(), 
+            email: email.trim(), 
+            message: message.trim()
+         }
+      })
+   } 
+   catch(err) {
+      throw new Error('oops, something went wrong! When writing a query: ' + err)
+   }
 }
