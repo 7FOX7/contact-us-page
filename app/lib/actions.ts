@@ -2,6 +2,7 @@
 
 import { z } from "zod"
 import { isValidEmail } from "./utils"
+import { sendEmail } from "./utils"
 import { PrismaClient } from "@prisma/client"
 
 const prisma = new PrismaClient()
@@ -11,7 +12,8 @@ export type State = {
       name?: string[], 
       email?: string[], 
       message?: string[]
-   }
+   }, 
+   message?: string
 }
 
 const ContactFormSchema = z.object({
@@ -29,7 +31,8 @@ export async function handleSubmit(prevState: State, contactForm: FormData) {
 
    if(!validatedEntries.success) {
       return {
-         errors: validatedEntries.error.flatten().fieldErrors
+         errors: validatedEntries.error.flatten().fieldErrors, 
+         message: 'Missing Fields. Failed to create a request form.'
       }
    }
 
@@ -42,8 +45,14 @@ export async function handleSubmit(prevState: State, contactForm: FormData) {
             message: message.trim()
          }
       })
+      console.log(user)
    } 
    catch(err) {
       throw new Error('oops, something went wrong! When writing a query: ' + err)
+   }
+
+   await sendEmail(name.trim(), email.trim())
+   return {
+      message: 'You are all good! We sent you a confirmation email.'
    }
 }
