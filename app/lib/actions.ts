@@ -10,7 +10,8 @@ export type State = {
       email?: string[], 
       message?: string[]
    }, 
-   message?: string
+   message?: string, 
+   disabled?: boolean
 }
 
 const ContactFormSchema = z.object({
@@ -37,6 +38,7 @@ export async function handleSubmit(prevState: State, contactForm: FormData) {
 
    await sendEmail(name.trim(), email.trim())
    return {
-      message: 'You are all good! We sent you a confirmation email.'
+      message: 'You are all good! We sent you a confirmation email.', 
+      disabled: true
    }
 }
