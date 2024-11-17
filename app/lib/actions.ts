@@ -3,9 +3,6 @@
 import { z } from "zod"
 import { isValidEmail } from "./utils"
 import { sendEmail } from "./utils"
-import { PrismaClient } from "@prisma/client"
-
-const prisma = new PrismaClient()
 
 export type State = {
    errors?: {
@@ -36,24 +33,7 @@ export async function handleSubmit(prevState: State, contactForm: FormData) {
       }
    }
 
-   const {name, email, message} = validatedEntries.data; 
-   try {
-      const user = await prisma.user.create({
-         data: {
-            name: name.trim(), 
-            email: email.trim(), 
-            message: message.trim()
-         }
-      })
-      console.log(user)
-   } 
-   catch(err) {
-      console.error('Error creating user:', err);
-      return {
-         errors: {}, 
-         message: 'Something went wrong when creating the user.'
-      };
-   }
+   const {name, email} = validatedEntries.data; 
 
    await sendEmail(name.trim(), email.trim())
    return {
